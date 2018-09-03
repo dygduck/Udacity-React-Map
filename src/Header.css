@@ -1,0 +1,28 @@
+header {
+    padding: 1rem;
+    background-color: #d8bcbc;
+}
+
+.switch-menu {
+    line-height: 1.7rem;
+    font-size: 1.7rem;
+    /*cursor: pointer;*/
+    position: absolute;
+    display: none;
+}
+.title {
+    font-size: 1.7rem;
+    text-align: center;
+}
+
+@media all and (max-width: 800px) {
+    .switch-menu {
+        display: block
+    }
+}
+
+@media all and (max-width: 480px) {
+    .title {
+        font-size: 1.2rem
+    }
+}
