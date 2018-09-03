@@ -38,15 +38,16 @@ Please go to the build directory and start a localhost with python
 python -m SimpleHTTPServer 8000
 ```
 Open a browser window and navigate to [http://localhost:8000](http://localhost:8000) in your browser
+```
 
 ## API s used:
-This app uses Google Maps and Foursquare's API to list some cafes in Mountain View.
+This app uses Google Maps and Foursquare's API to list some cafes in Mountain View and show them on a map.
 
 
 In order to solve script loading problem in React I am inspired by:
 
 https://www.fullstackreact.com/articles/Declaratively_loading_JS_libraries/index.html
 
-In ordeer to fetch API I used Axios:
+In order to fetch API I used Axios, you can check from the link:
 
 https://github.com/axios/axios
