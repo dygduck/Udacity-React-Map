@@ -1,35 +1,16 @@
 import React, { Component } from 'react'
 import './App.css'
-import escapeRegExp from 'escape-string-regexp'
 
 // Places Data
 class List extends Component {
-
-    state = {
-        query: '',
-        places: this.props.places
-    }
-
-    updateQuery = (query) => {
-        this.setState({ query })
-        
-        var venues = this.props.places
-        var updatedPlaces
-
-        if(this.state.query && (this.state.query !== '')) {
-            const match = new RegExp(escapeRegExp(query), 'i');
-            updatedPlaces = venues.filter((place) => match.test(place.venue.name))
-            this.setState({places: updatedPlaces})
-            this.props.setPlaces(updatedPlaces)
-        } else {
-            this.setState({places: venues})
-        }
-    }
+   updateQuery = (e) => {
+     this.props.setQuery(e.target.value);
+   }
 
     setMarkerClick = (placeTitle) => {
-        this.props.markers.map((marker) => {
-            if(marker.title === placeTitle) {
-                window.google.maps.event.trigger(marker, 'click');
+        this.props.markers.map((m) => {
+            if(m.marker.title === placeTitle) {
+                window.google.maps.event.trigger(m.marker, 'click');
             }
         })
     }
@@ -39,22 +20,22 @@ class List extends Component {
             <section>
                 <div className="searchplace">
                     <label htmlFor="searchQuery">Seach for cafes</label>
-                    <input 
-                        id="searchQuery" 
-                        type="text" 
-                        placeholder="Please Enter" 
-                        onChange={(e) => this.updateQuery(e.target.value)} 
-                        value={this.state.query}
+                    <input
+                        id="searchQuery"
+                        type="text"
+                        placeholder="Please Enter"
+                        onChange={this.updateQuery}
+                        value={this.props.query}
                     />
                 </div>
 
-                {this.state.places.length !== 0 && (
+                {this.props.places.length !== 0 && (
                     <ul className="result">
-                        {this.state.places.map((place, index) => (
-                            <li 
+                        {this.props.places.map((place, index) => (
+                            <li
                                 key={index}
-                                tabindex={index}
-                                className="item" 
+                                tabIndex={index}
+                                className="item"
                                 onClick={() => this.setMarkerClick(place.venue.name)}
                             >
                                 {place.venue.name}
@@ -63,12 +44,12 @@ class List extends Component {
                     </ul>
                 )}
 
-                {this.state.places === 0 && (
+                {this.props.places === 0 && (
                     <ul className="result">
                         <li className="item">oops sorry, nothing found..</li>
                     </ul>
                 )}
-                
+
             </section>
 
         )

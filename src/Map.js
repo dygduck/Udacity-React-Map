@@ -4,7 +4,6 @@ import './App.css'
 class Map extends Component {
 
     render() {
-
         return (
             <div id="map"></div>
         )

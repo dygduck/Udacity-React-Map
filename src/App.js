@@ -1,25 +1,39 @@
 import React, { Component } from 'react';
+import escapeRegExp from 'escape-string-regexp';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios'
-import Menu from './List'
+import List from './List'
 import Map from './Map'
 import Header from './Header'
 
 class App extends Component {
-
-  state = {
-    venues: [], 
-    places: [],
-    markers: [],
-    latLong: "37.3937, 122.0789"
+  constructor(props) {
+    super(props);
+    this.map = null;
+    this.state = {
+      places: [],
+      filteredPlaces: [],
+      markers: [],
+      latLong: "37.3937, 122.0789",
+      query: ''
+    };
   }
 
   componentDidMount() {
     this.receivePlaces('food', 'mountain view, ca')
   }
 
-  
+  updateQuery = (query) => {
+    if (query && query !== this.state.query) {
+      const match = new RegExp(escapeRegExp(query), 'i');
+      const places = this.state.places.filter((place) => match.test(place.venue.name));
+      this.setState({ filteredPlaces: places, query }, this.updateMarkers);
+    } else {
+      this.setState({ filteredPlaces: this.state.places, query }, this.updateMarkers);
+    }
+  }
+
   receivePlaces = (query, location) => {
     var endPoint = "https://api.foursquare.com/v2/venues/explore?"
     var parameters = {
@@ -33,11 +47,14 @@ class App extends Component {
     axios.get(endPoint + new URLSearchParams(parameters))
     // use the axios to fetch the api
       .then(response => {
-        this.setState({
-          venues: response.data.response.groups[0].items,
-          places: response.data.response.groups[0].items
-        }, this.loadMap)
+        const places = response.data.response.groups[0].items;
+        console.log(places);
+        this.setState({ places, filteredPlaces: places }, this.loadMap);
       })
+      .catch(error => {
+        console.log("ERROR!! " + error)
+        alert("Sorry, but we can not receive data from Foursquare momentarily.");
+      });
   }
 
   loadMap = () => {
@@ -46,45 +63,71 @@ class App extends Component {
     window.initMap = this.initMap
   }
 
+
+
+
   initMap = () => {
     // creates the google map
-    var map = new window.google.maps.Map(document.getElementById('map'), {
-      center: {lat: 37.3861, lng: -122.0839},
-      zoom: 13
-    });
+    try {
+      this.map = new window.google.maps.Map(document.getElementById('map'), {
+        center: {lat: 37.3861, lng: -122.0839},
+        zoom: 13
+      });
+    }
+    catch (err) {
+      alert("Sorry, but we can not receive data from Google Maps momentarily.");
+      return;
+    }
 
     // creates an info window for marked points
     var infowindow = new window.google.maps.InfoWindow();
 
     // shows the markers on the map
-    this.state.places.map((place) => {
+    const markers = this.state.places.map((place) => {
       // creates a marker for the places
       var marker = new window.google.maps.Marker({
-        position: {lat: place.venue.location.lat, lng: place.venue.location.lng},
-        map: map,
+        position: {
+          lat: place.venue.location.lat,
+          lng: place.venue.location.lng
+        },
+        map: this.map,
         title: place.venue.name
       });
-
-      // add created markers to the markers array
-      this.state.markers.push(marker)
 
       // creates content strings
       var contentString = `
                       <h1>${place.venue.name}</h1>
-                      <p>Address: ${place.venue.location.formattedAddress[0]} 
-                      ${place.venue.location.formattedAddress[1]} 
+                      <p>Address: ${place.venue.location.formattedAddress[0]}
+                      ${place.venue.location.formattedAddress[1]}
                       ${place.venue.location.formattedAddress[2]}</p>
+                      <a href="${'https://foursquare.com/v/'+place.venue.id}" target="_blank">View on FourSquare</a>
                       `
       // sets the content for infowindow and opens it once clicked to the marker
       marker.addListener('click', function() {
+        if (marker.getAnimation() != null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(window.google.maps.Animation.BOUNCE);
+        }
         infowindow.setContent(contentString)
-        infowindow.open(map, marker);
+        infowindow.open(this.map, marker);
       });
-    })
+
+      return { id: place.venue.id, marker };
+    });
+
+    this.setState({ markers });
   }
 
-  setPlaces = (updatedPlaces) => {
-        this.setState({places: updatedPlaces})
+  updateMarkers = () => {
+    const venueIds = this.state.filteredPlaces.map(fp => fp.venue.id);
+    this.state.markers.forEach(m => {
+      if (venueIds.indexOf(m.id) > -1) {
+        m.marker.setMap(this.map);
+      } else {
+        m.marker.setMap(null);
+      }
+    });
   }
 
   render() {
@@ -92,12 +135,13 @@ class App extends Component {
       <div>
         <Header/>
         <main>
-          <Menu 
-            places={this.state.venues} 
-            markers={this.state.markers} 
-            setPlaces={this.setPlaces}
+          <List
+            places={this.state.filteredPlaces}
+            query={this.state.query}
+            setQuery={this.updateQuery}
+            markers={this.state.markers}
           />
-          <Map/>
+          <Map />
         </main>
       </div>
     )
