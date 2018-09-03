@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import './Menu.css'
+import './App.css'
 import escapeRegExp from 'escape-string-regexp'
 
 // Places Data
-class Menu extends Component {
+class List extends Component {
 
     state = {
         query: '',
@@ -13,20 +13,20 @@ class Menu extends Component {
     updateQuery = (query) => {
         this.setState({ query })
         
-        let allPlaces = this.props.places
-        let newPlaces
+        var venues = this.props.places
+        var updatedPlaces
 
         if(this.state.query && (this.state.query !== '')) {
             const match = new RegExp(escapeRegExp(query), 'i');
-            newPlaces = allPlaces.filter((place) => match.test(place.venue.name))
-            this.setState({places: newPlaces})
-            this.props.setPlaces(newPlaces)
+            updatedPlaces = venues.filter((place) => match.test(place.venue.name))
+            this.setState({places: updatedPlaces})
+            this.props.setPlaces(updatedPlaces)
         } else {
-            this.setState({places: allPlaces})
+            this.setState({places: venues})
         }
     }
 
-    triggerMarkerClick = (placeTitle) => {
+    setMarkerClick = (placeTitle) => {
         this.props.markers.map((marker) => {
             if(marker.title === placeTitle) {
                 window.google.maps.event.trigger(marker, 'click');
@@ -36,26 +36,26 @@ class Menu extends Component {
 
     render() {
         return (
-            <aside>
-                <div className="search-form">
-                    <label htmlFor="searchQuery">Browse Coffee Shops</label>
+            <section>
+                <div className="searchplace">
+                    <label htmlFor="searchQuery">Seach for cafes</label>
                     <input 
                         id="searchQuery" 
                         type="text" 
-                        placeholder="Search Here" 
+                        placeholder="Please Enter" 
                         onChange={(e) => this.updateQuery(e.target.value)} 
                         value={this.state.query}
                     />
                 </div>
 
                 {this.state.places.length !== 0 && (
-                    <ul className="search-result">
+                    <ul className="result">
                         {this.state.places.map((place, index) => (
                             <li 
                                 key={index}
-                                tabIndex={index}
+                                tabindex={index}
                                 className="item" 
-                                onClick={() => this.triggerMarkerClick(place.venue.name)}
+                                onClick={() => this.setMarkerClick(place.venue.name)}
                             >
                                 {place.venue.name}
                             </li>
@@ -64,15 +64,15 @@ class Menu extends Component {
                 )}
 
                 {this.state.places === 0 && (
-                    <ul className="search-result">
-                        <li className="item">No Places Found..</li>
+                    <ul className="result">
+                        <li className="item">oops sorry, nothing found..</li>
                     </ul>
                 )}
                 
-            </aside>
+            </section>
 
         )
     }
 }
 
-export default Menu
+export default List

@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import './Header.css'
+import './App.css'
 
 class Menu extends Component {
 
   switchMenu = () => {
-    const menu = document.querySelector('aside')
-    menu.classList.toggle("toggle")
+    var list = document.querySelector('section')
+    list.classList.toggle("toggle")
   }
 
   render() {
@@ -13,7 +13,7 @@ class Menu extends Component {
     return (
       <header>
         <span className="switch-menu fas fa-bars" onClick={this.switchMenu}></span>
-        <h1 className="title">Mountain View Coffee Shops</h1>
+        <h1 className="title">Mountain View Cafes</h1>
       </header>
     )
   }

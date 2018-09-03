@@ -2,21 +2,21 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios'
-import Menu from './Menu'
+import Menu from './List'
 import Map from './Map'
 import Header from './Header'
 
 class App extends Component {
 
   state = {
-    allPlaces: [], 
+    venues: [], 
     places: [],
     markers: [],
     latLong: "37.3937, 122.0789"
   }
 
   componentDidMount() {
-    this.receivePlaces('coffee', 'mountain view, ca')
+    this.receivePlaces('food', 'mountain view, ca')
   }
 
   
@@ -34,7 +34,7 @@ class App extends Component {
     // use the axios to fetch the api
       .then(response => {
         this.setState({
-          allPlaces: response.data.response.groups[0].items,
+          venues: response.data.response.groups[0].items,
           places: response.data.response.groups[0].items
         }, this.loadMap)
       })
@@ -93,7 +93,7 @@ class App extends Component {
         <Header/>
         <main>
           <Menu 
-            places={this.state.allPlaces} 
+            places={this.state.venues} 
             markers={this.state.markers} 
             setPlaces={this.setPlaces}
           />

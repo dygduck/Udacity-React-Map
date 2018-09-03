@@ -40,3 +40,121 @@ html, body {
   margin: 0;
   padding: 0;
 }*/
+
+
+
+/*************************HEADER PART**********************/
+
+header {
+    padding: 1rem;
+    background-color: #d8bcbc;
+}
+
+.title {
+    text-align: center;
+    font-size: 1.7rem;
+}
+.switch-menu {
+    position: absolute;
+    display: none;
+    font-size: 1.7rem;
+}
+
+@media all and (max-width: 480px) {
+    .title {
+        font-size: 1rem
+    }
+}
+@media all and (max-width: 800px) {
+    .switch-menu {
+        display: block
+    }
+}
+
+/*************************MAP PART**********************/
+
+
+#map {
+    width: 70%;
+    height: calc(100vh - 65px);
+}
+
+@media all and (max-width: 800px) {
+    #map {
+        width: 100%
+    }
+}
+
+
+/*************************LIST PART**********************/
+
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+}
+section {
+    background: #d8bcbc;
+    padding: 0 0.5rem;
+    width: 30%;
+    height: calc(100vh - 65px);
+}
+section h2 {
+    text-align: center;
+    color: #2b2525;
+    margin: 1rem 0;
+}
+section .result {
+    max-height: calc(75vh - 50px);
+    overflow-y: scroll;
+}
+section .result li {
+    color: #2b2525;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: all 300ms ease-in-out;
+}
+section .result li:hover {
+    color: #ffffff;
+    background: #6c5e5e;
+}
+section .searchplace {
+    width: 100%;
+    margin-bottom: 1rem;
+
+}
+section .searchplace label {
+    color: #2b2525;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    display: block;
+}
+section .searchplace input {
+    box-sizing: border-box;
+    border: 1px solid #2b2525;
+    width: 100%;
+    padding: 1rem;
+}
+
+@media all and (max-width: 800px) {
+    section {
+        position: fixed;
+        left: -100%;
+        width: 250px;
+        transition: all 500ms ease-in-out;
+        z-index: 99;
+    }
+    section.toggle {
+        left: 0
+    }
+}
+
+
+
+
+
+
+
+
